@@ -14,6 +14,8 @@
                 
         require_once("./UER/URX.php");
         $EP = new EntityProcessor();
+        // uncomment the next line if you dislike debuh data
+        // $EP->debugmode=FALSE; // for production edit the aLogger.php file
         
         
         ?>
