@@ -23,7 +23,7 @@ class defaultProcessor extends aEntityClass implements iProcessor {
         $parsed_URL= array();
         $parsed_URL['schema']=$parts[0];
         $parsed_URL['NID']=$parts[1];
-        $parsed_URL['NSS']=array_shift(array_shift($parts));
+        $parsed_URL['NSS']=array_slice($parts,2);
         return $parsed_URL;
     }
     
