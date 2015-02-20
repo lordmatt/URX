@@ -12,8 +12,7 @@
         <?php
         
                 
-        require_once("./UER/a/aLogger.php");
-        require_once("./UER/EntityProcessor.php");
+        require_once("./UER/URX.php");
         $EP = new EntityProcessor();
         
         
@@ -60,6 +59,7 @@ Now we try a URN - URN:ASIN:1844137902<br />
             var_dump($EP);
         }        
         ?>
+
 
 Next step is a module to do something nice with youtube links.
         </pre>
