@@ -19,8 +19,7 @@ This project is a rewrite of UEntity which does the same thing and works but is,
 
 2. Require files
 
-        require_once("./UER/a/aLogger.php");
-        require_once("./UER/EntityProcessor.php");
+        require_once("./UER/URX.php");
 
 3. Make object
 
