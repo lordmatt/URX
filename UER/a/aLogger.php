@@ -23,7 +23,9 @@ abstract class aLogger {
         $report = array();
         $report['location']=$trigger;
         $report['message']=$error;
-        $report['URI']=$this->URI;
+        if(isset($this->URI)){
+            $report['URI']=$this->URI;
+        }
         $this->logs[]=$report;
     }
     
