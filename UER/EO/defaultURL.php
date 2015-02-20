@@ -27,9 +27,10 @@ class defaultURL extends aEntityClass implements iEntityClass {
     /**
      *  Uniform Resorce Locator
      */
-    public function handle_URL($RI,$parsed_ri){
+    public function handle_HTTP($RI,$parsed_ri){
         $this->basic_ri_actions($RI,$parsed_ri);
         $this->RI=$this->URI;
+        $this->ready=true;
         return true;
     }
     
@@ -40,6 +41,7 @@ class defaultURL extends aEntityClass implements iEntityClass {
         $this->basic_ri_actions($RI, $parsed_ri);
         $this->URI = $this->infoURL.$RI;
         $this->RI=$RI;
+        $this->ready=true;
         return true;
     }
     

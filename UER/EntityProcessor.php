@@ -31,15 +31,17 @@ class EntityProcessor extends aLogger {
     );
     
     public function __construct($input=false) {
-        $this->map_handler('HTTP;','deafult:URL','defaultURL');
-        $this->map_handler('URN;','deafult:URL','defaultURL');
-        $this->map_handler('SRN;','deafult:URL','defaultURL');
+        $this->map_handler('HTTP','*','defaultURL');
+        $this->map_handler('URN','*','defaultURL');
+        $this->map_handler('SRN','*','defaultURL');
         spl_autoload_register(array($this, 'UER_loader'));
         if($input){
             $this->register_handlers($input);
         }
         $this->register_handlers('defaultProcessor');
     }
+    
+
     
     /**
      * Takes the RI and creates the relivant object from it.
@@ -72,7 +74,12 @@ class EntityProcessor extends aLogger {
         }
         
         $action = "handle_{$schema}";
-        $handler = $this->get_handler_for_schema($schema, $parse_ri['NID']);
+        $handler = $this->get_handler_for_schema($schema, $parsed_ri['NID']);
+        
+        if(!is_object($handler)){
+            $this->log_error("Failed to make object for $RI");
+            return false;
+        }
         
         // do the deed.
         $handler->{$action}($RI,$parsed_ri);
@@ -81,10 +88,22 @@ class EntityProcessor extends aLogger {
     }
     
     protected function get_handler_for_schema($schema,$NID){
+        $this->debug("get_handler_for_schema($schema,$NID)");
         $map_point = $this->get_map_point_for_schema($schema);
-        if(!isset($map_point[$NID])){
-            $NID = 'deafult:URL';
+        if($map_point===false){
+            $this->log_error("Map Point Failed for $schema,$NID)");
+            return false;
         }
+        //$this->debug("Map Point: ".print_r($map_point, true));
+        if(!isset($map_point[$NID])){
+            if(isset($map_point['*'])){
+                $NID = '*';
+            }else{
+                $this->log_error("No default found for $schema)");
+                return false;
+            }
+        }
+        //$this->debug("Map Point: ".print_r($map_point, true));
         $handler = $this->get_handler_obj($map_point[$NID]);
         return $handler;
     }
@@ -105,6 +124,10 @@ class EntityProcessor extends aLogger {
     }
     
     protected function get_handler_obj($h){
+            if(trim($h)==''){
+                $this->log_error("get_handler_obj($h) is empty");
+                return false;
+            }
             if(!isset($this->handlers[$h])){
                 $this->handlers[$h] = new $h();
             }
@@ -131,7 +154,8 @@ class EntityProcessor extends aLogger {
     protected function _register_handler($handler){
         //$this->handlers[$handler]= new $handler();
         //$handles = $this->handlers[$handler]->get_handlers();
-        if($handler instanceof iEntityClass) {
+        $ints = class_implements($handler,true);
+        if(isset($ints['iEntityClass'])) {
             $handles = $handler::get_handlers();
             if(empty($handles)){ return false; }
             foreach($handles as $handle){
@@ -143,11 +167,13 @@ class EntityProcessor extends aLogger {
             }
             return true;
         }
+        $this->debug("{$handler} is not a handler");
         return false;
     }
     
     protected function _register_processer($handler){
-        if($handler instanceof iProcessor) {
+        $ints = class_implements($handler,true);
+        if(isset($ints['iProcessor'])) {
             $pro=$handler::get_processors();
             if(empty($pro)){ return false; }
             foreach($pro as $p){
@@ -155,6 +181,8 @@ class EntityProcessor extends aLogger {
             }
             return true;
         }
+        $this->debug("{$handler} is not a processor");
+        $this->debug(print_r(class_implements($handler,true),true));
         return false;
     }
     
@@ -168,7 +196,7 @@ class EntityProcessor extends aLogger {
      * @return boolean 
      */
     private function UER_loader($className) {
-        echo "Loading: $className";
+        $this->debug("Loading: $className");
         $path = dirname(__FILE__);
         $EO = "{$path}/EO/{$className}.php";
         $iEO = "{$path}/i/{$className}.php";
@@ -187,7 +215,7 @@ class EntityProcessor extends aLogger {
             include_once($aEO);
             return true;
         }else{
-            echo " [Nope]";
+            $this->debug("No luck with {$className}");
             $this->log_error('Failed to autoload '.$className);
             return false;
         }
