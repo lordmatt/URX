@@ -60,6 +60,8 @@ Now we try a URN - URN:ASIN:1844137902<br />
             var_dump($EP);
         }        
         ?>
+
+Next step is a module to do something nice with youtube links.
         </pre>
     </body>
 </html>
