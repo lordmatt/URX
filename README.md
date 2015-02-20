@@ -1,6 +1,8 @@
 # URX
 An extensible library for handling Resource Identifies in a web-generation context.
 
+Handles URLs and URNs like a pro. It does not however really do anything with them as that is your job.
+
 # Overview
 Development Status: Mid Alpha
 
