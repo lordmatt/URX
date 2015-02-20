@@ -12,3 +12,24 @@ Specially engineered from the ground up to convert all forms of Resource Identif
 See Uniform Entity Resource (EUR) readme file for details: https://github.com/lordmatt/URX/blob/master/UER/readme.txt
 
 This project is a rewrite of UEntity which does the same thing and works but is, IMHO, not well written. I can make it available if anyone is really interested.
+
+# Usage
+
+1. Download and place the UER folder within your project.
+
+2. Require files
+
+        require_once("./UER/a/aLogger.php");
+        require_once("./UER/EntityProcessor.php");
+
+3. Make object
+
+        $EP = new EntityProcessor();
+
+4. Get your first URX object:
+
+        $Object = $EP->getObject($MyString);
+
+5. Make something wonderful. 
+
+        (You are on your own with that one).
