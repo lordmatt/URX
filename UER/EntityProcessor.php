@@ -9,7 +9,7 @@
  */
 
 if(!defined('_SYS_EO_PATH_')){
-    define('_SYS_EO_PATH_', './sysEO');
+    define('_SYS_EO_PATH_', dirname(__FILE__).'/sysEO');
 }
 
 class EntityProcessor extends aLogger {
@@ -50,7 +50,7 @@ class EntityProcessor extends aLogger {
         $parts = explode(':',$RI);
         $schema=$parts[0];
         unset($parts);
-        
+        $schema = strtoupper($schema);
         if(!isset($this->schema_processors[$schema])){
             $this->log_error('Unknown Schema.');
             // cannot cope with this
@@ -131,25 +131,31 @@ class EntityProcessor extends aLogger {
     protected function _register_handler($handler){
         //$this->handlers[$handler]= new $handler();
         //$handles = $this->handlers[$handler]->get_handlers();
-        $handles = $handler::get_handlers();
-        if(empty($handles)){ return false; }
-        foreach($handles as $handle){
-            if(isset($handle['redirects'])){
-                $this->map_handler_schema_redirect($handle['schema'],$handle['redirects']);
-            }else{
-                $this->map_handler($handle['schema'],$handle['domain'],$handler);
+        if($handler instanceof iEntityClass) {
+            $handles = $handler::get_handlers();
+            if(empty($handles)){ return false; }
+            foreach($handles as $handle){
+                if(isset($handle['redirects'])){
+                    $this->map_handler_schema_redirect($handle['schema'],$handle['redirects']);
+                }else{
+                    $this->map_handler($handle['schema'],$handle['domain'],$handler);
+                }
             }
+            return true;
         }
-        return true;
+        return false;
     }
     
     protected function _register_processer($handler){
-        $pro=$handler::get_processors();
-        if(empty($pro)){ return false; }
-        foreach($pro as $p){
-            $this->schema_processors[$p][] = $handler;
+        if($handler instanceof iProcessor) {
+            $pro=$handler::get_processors();
+            if(empty($pro)){ return false; }
+            foreach($pro as $p){
+                $this->schema_processors[$p][] = $handler;
+            }
+            return true;
         }
-        return true;
+        return false;
     }
     
     /**
@@ -162,9 +168,11 @@ class EntityProcessor extends aLogger {
      * @return boolean 
      */
     private function UER_loader($className) {
-        $EO = "./EO/{$className}.php";
-        $iEO = "./i/{$className}.php";
-        $aEO = "./a/{$className}.php";
+        echo "Loading: $className";
+        $path = dirname(__FILE__);
+        $EO = "{$path}/EO/{$className}.php";
+        $iEO = "{$path}/i/{$className}.php";
+        $aEO = "{$path}/a/{$className}.php";
         $sysEO = _SYS_EO_PATH_."/{$className}.php";
         if(file_exists($EO)){
             include_once($EO);
@@ -179,6 +187,7 @@ class EntityProcessor extends aLogger {
             include_once($aEO);
             return true;
         }else{
+            echo " [Nope]";
             $this->log_error('Failed to autoload '.$className);
             return false;
         }
