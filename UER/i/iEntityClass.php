@@ -23,14 +23,7 @@ interface iEntityClass {
      * @return array 
      */
     public static function get_handlers();
-    
-    /**
-     * Be sure that there is a public process_[$SCHEMANAME](); for each schema
-     * that the prcoessor offers to handle a namespace for. 
-     * 
-     * @return array
-     */
-    public static function get_processors();
+
     
     /**
      * Some systems may wish to pass render context information but it should 

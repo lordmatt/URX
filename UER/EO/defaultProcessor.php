@@ -4,16 +4,20 @@
  *
  * @author lordmatt
  */
-class defaultProcessor extends aEntityClass implements iEntityClass {
+class defaultProcessor extends aEntityClass implements iProcessor {
     
-    public static function get_handlers(){
-        return array(); // impliments none
-    }
     
     public static function get_processors(){
         return array('URN','URS','HTTP');
     }
-
+    
+    /**
+     * Parses URN formatted strings into an array for deligation by the EP
+     * Note: the EP expects an array element called NID which identifies the
+     *       name space for selection of a processor object
+     * @param string $RI
+     * @return array 
+     */
     public function process_URN($RI){
         $parts = explode(':',$RI);
         $parsed_URL= array();
@@ -37,14 +41,6 @@ class defaultProcessor extends aEntityClass implements iEntityClass {
     public function process_SRN($RI){
         // since the format is exactly the same...
         return $this->process_URN($RI); 
-    }
-    
-    
-    /**
-     *  this class does not render anything 
-     */
-    public function render_class($context=null){
-        return false;
     }
     
     protected function failure_to_parse_URI(){
