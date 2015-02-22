@@ -24,8 +24,6 @@ class defaultURL extends aEntityClass implements iEntityClass {
         'website'=>'unknown'
     );
     
-
-    
     /**
      *  Uniform Resorce Locator
      */
@@ -71,7 +69,5 @@ class defaultURL extends aEntityClass implements iEntityClass {
     public static function get_handlers() {
         return false;
     }
-
-
     
 }
