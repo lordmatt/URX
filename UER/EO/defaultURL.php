@@ -13,12 +13,16 @@ class defaultURL extends aEntityClass implements iEntityClass {
     protected $RI;
     public $infoURL = "http://example.com/?rx=";
     
-    /**
-     * @return array 
-     */
-    public static function get_handlers(){
-        return FALSE;
-    }
+    protected $object_data = array(
+        'name'=>'unknown',
+        'description'=>'unknown',
+        'version'=>'unknown',
+        'API'=>'uknown',
+        'support'=>'unknown',        
+        'updates'=>'unknown',
+        'author'=>'unknown',
+        'website'=>'unknown'
+    );
     
     public static function get_processors(){
         return array('HTTP','URN','SRN');
