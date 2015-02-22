@@ -162,7 +162,7 @@ class EntityProcessor extends aLogger {
                 if(isset($handle['redirects'])){
                     $this->map_handler_schema_redirect($handle['schema'],$handle['redirects']);
                 }else{
-                    $this->map_handler($handle['schema'],$handle['domain'],$handler);
+                    $this->map_handler($handle['schema'],$handle['NID'],$handler);
                 }
             }
             return true;
@@ -226,8 +226,8 @@ class EntityProcessor extends aLogger {
         $this->map[$schema]=$redirects;
     }
     
-    protected function map_handler($schema,$domain,$handler){
-        $this->map[$schema][$domain]=$handler;
+    protected function map_handler($schema,$NID,$handler){
+        $this->map[$schema][$NID]=$handler;
     }
         
 }
