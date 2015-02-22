@@ -7,13 +7,15 @@
     <body>
         <h1>Demo of system in progress.</h1>
         
-        <pre>Before we start we get things booted up
+        <pre>If you left the debug information on this is going to be verbose.
+
+Before we start we get things booted up
 
         <?php
         
                 
         require_once("./UER/URX.php");
-        $EP = new EntityProcessor();
+        $EP = new EntityProcessor('youtube');
         // uncomment the next line if you dislike debuh data
         // $EP->debugmode=FALSE; // for production edit the aLogger.php file
         
@@ -34,7 +36,7 @@ Now we take a URL [http://lordmatt.co.uk] and process it:
             echo "lm:";
             var_dump($lm);
             echo "<br />error log";
-            var_dump($EP->get_error_log());
+            var_dump($EP->flush_error_log());
             echo "<br />";
             echo "<br />EP";
             var_dump($EP);
@@ -55,15 +57,83 @@ Now we try a URN - URN:ASIN:1844137902<br />
             echo "book:";
             var_dump($book);
             echo "<br />error log";
-            var_dump($EP->get_error_log());
+            var_dump($EP->flush_error_log());
             echo "<br />";
             echo "<br />EP";
             var_dump($EP);
         }        
         ?>
 
+Next step is a module to do something nice with youtube links. 
 
-Next step is a module to do something nice with youtube links.
+At this stage of development I have assumed that youtube is a loaded module.
+
+For this test we will use a long HTTPS link
+
+[https://www.youtube.com/watch?v=lWTl5-wYX9o&feature=youtu.be]
+
+        <?php
+        
+        $tube = $EP->getObject('https://www.youtube.com/watch?v=lWTl5-wYX9o&feature=youtu.be');
+        
+        echo "\n";
+        if($tube){
+            echo "result time:\n\n ", $tube->render_class();
+        }else{
+            echo "youtube:";
+            var_dump($tube);
+            echo "<br />error log";
+            var_dump($EP->flush_error_log());
+        }
+        echo "\n\nThe SRN for this (faster to process) is <b>",$tube->get_SRN() , "</b>\n\n";
+        
+        echo "\n\nAs a link <b>",$tube->render_class('link') , "</b>\n\n";
+        ?>
+
+Now short form URL [http://youtu.be/lWTl5-wYX9o]
+
+
+        <?php
+        
+        $tube = $EP->getObject('http://youtu.be/lWTl5-wYX9o');
+        
+        echo "\n";
+        if($tube){
+            echo "result time:\n\n ", $tube->render_class();
+        }else{
+            echo "youtube:";
+            var_dump($tube);
+            echo "<br />error log";
+            var_dump($EP->flush_error_log());
+        }
+        echo "\n\nThe SRN for this (faster to process) is <b>",$tube->get_SRN() , '</b>\n\n';
+        
+        echo "\n\nAs a link <b>",$tube->render_class('link') , "</b>\n\n";
+        
+        ?>
+
+(yes, the SRN is the same both times because both URLs point to the same video)
+
+Now as an SRN [SRN:youtube:lWTl5-wYX9o]
+
+
+        <?php
+        
+        $tube = $EP->getObject('SRN:youtube:lWTl5-wYX9o');
+        
+        echo "\n";
+        if($tube){
+            echo "result time:\n\n ", $tube->render_class();
+        }else{
+            echo "youtube:";
+            var_dump($tube);
+            echo "<br />error log";
+            var_dump($EP->flush_error_log());
+        }
+        
+        ?>
+
+
         </pre>
     </body>
 </html>

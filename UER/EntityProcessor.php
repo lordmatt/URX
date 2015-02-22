@@ -27,9 +27,10 @@ class EntityProcessor extends aLogger {
     protected $schema_processors = array(
         'URN'=>array(),
         'SRN'=>array(),
-        'HTTP'=>array()
+        'HTTP'=>array(),
+        'HTTPS'=>array()
     );
-    
+    protected $last_mapped_schema = '';
     public function __construct($input=false) {
         $this->map_handler('HTTP','*','defaultURL');
         $this->map_handler('URN','*','defaultURL');
@@ -41,7 +42,20 @@ class EntityProcessor extends aLogger {
         $this->register_handlers('defaultProcessor');
     }
     
+    protected function get_schema_processors($schema){
+        $schema = strtoupper($schema);
+        if(!isset($this->schema_processors[$schema])){
+            $this->debug("get_schema_processor({$schema}) - what am I supposed to do with that?");
+            // cannot cope with this
+            return false;
+        }
+        if(is_array($this->schema_processors[$schema])!=true){
+            $this->debug("That is not even an array");
+            return false;
+        }
 
+        return $this->schema_processors[$schema];
+    }
     
     /**
      * Takes the RI and creates the relivant object from it.
@@ -51,17 +65,16 @@ class EntityProcessor extends aLogger {
     public function getObject($RI){
         $parts = explode(':',$RI);
         $schema=$parts[0];
-        unset($parts);
         $schema = strtoupper($schema);
-        if(!isset($this->schema_processors[$schema])){
-            $this->log_error('Unknown Schema.');
-            // cannot cope with this
+        unset($parts);
+        $SPs = $this->get_schema_processors($schema);
+        if($SPs===false){
+            $this->log_error("Failed to get processor list");
             return false;
         }
-        
         $parsed_ri = '';
         $action = "process_{$schema}";
-        foreach($this->schema_processors[$schema] as $sp){
+        foreach($SPs as $sp){
             $handle = $this->get_handler_obj($sp);
             $parsed_ri = $handle->{$action}($RI);
             if(is_array($parsed_ri)){
@@ -72,7 +85,11 @@ class EntityProcessor extends aLogger {
             $this->log_error('Failed to parse RI.');
             return false;
         }
-        
+        $mappoint=$this->get_map_point_for_schema($schema);
+        if( ($this->last_mapped_schema != '') && ($schema!=$this->last_mapped_schema) ){
+            $this->debug('Assuming that schema redirected');
+            $schema = $this->last_mapped_schema;
+        }
         $action = "handle_{$schema}";
         $handler = $this->get_handler_for_schema($schema, $parsed_ri['NID']);
         
@@ -114,10 +131,20 @@ class EntityProcessor extends aLogger {
             $this->log_error('Possible redirect recursion detected.');
             return false;
         }
+        if(is_array($schema)){
+            $this->debug("How the hell did you manage to get an array in here?");
+            return false;
+        }
+        if( (trim($schema)=='') || (!isset($this->map[$schema])) ){
+            $this->debug("map-point error: '{$schema}' not set on parse {$loop}");
+            $this->log_error("'{$schema}' is unknown.");
+            return false;
+        }
         $map_point = $this->map[$schema];
         if(!is_array($map_point)){
             ++$loop;
-            $map_point = $this->get_map_point_for_schema($schema, $loop);
+            $this->last_mapped_schema = $map_point;
+            $map_point = $this->get_map_point_for_schema($map_point, $loop);
         }
         
         return $map_point;        

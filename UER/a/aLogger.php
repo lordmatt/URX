@@ -31,6 +31,16 @@ abstract class aLogger {
         $this->logs[]=$report;
     }
     
+    /**
+     * Get and empty the error log
+     * @return array
+     */
+    public function flush_error_log(){
+        $error_log = $this->get_error_log();
+        $this->logs=array();
+        return $error_log;
+    }
+    
     protected function debug($message){
         $trace=debug_backtrace();
         $caller=$trace[1];

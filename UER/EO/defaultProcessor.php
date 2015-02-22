@@ -8,7 +8,7 @@ class defaultProcessor extends aEntityClass implements iProcessor {
     
     
     public static function get_processors(){
-        return array('URN','URS','HTTP');
+        return array('URN','URS','HTTP','HTTPS');
     }
     
     /**
@@ -31,6 +31,11 @@ class defaultProcessor extends aEntityClass implements iProcessor {
         $parsed_URL = parse_url($RI);
         $parsed_URL['NID']=$parsed_URL['host'];
         return $parsed_URL;
+    }
+    
+    public function process_HTTPS($RI){
+        $result = $this->process_HTTP($RI);
+        return $result;
     }
     
     /**

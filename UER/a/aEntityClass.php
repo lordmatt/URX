@@ -52,6 +52,7 @@ abstract class aEntityClass extends aLogger{
      */
     protected function basic_ri_actions($RI,$parsed_ri){
         $this->URI = $RI;
+        $this->RI  = $RI;
         $this->parsed_RI = $parsed_ri;
     }
     
