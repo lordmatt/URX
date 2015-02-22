@@ -39,25 +39,21 @@ interface iEntityClass {
      */
     public function get_error_log();
     
+    /**
+     * This interface requirement is intended to provide a number of expected 
+     * behaviours. When no paramaters are provided an array of available data
+     * elements should be returned. When there is a paramater given if it is a
+     * string then the data should be returned and if array then all matches 
+     * within the array should be returned. In all other cases null should be 
+     * returned.
+     */
+    public function inspect_object($detail=false);
+    
 }
 
 
 /*
-   /**
-     * Uniform Resorce Locator
-     * @return bool
-     
-    public function handle_URL($URL,$parsed_url);
-    
-    /**
-     * Uniform Resource Name
-     * 
-     * SSI is an array of the URN parts (SSI) after the NID
-     * 
-     * @return bool
-     
-    public function handle_URN($NID,$SSI=array());
-    
+
     /**
      * System Resource Name - format as 'URN'. In essence SRN are unofficial URN
      * but granted a different schema to avoid confusion and name space clashes. 
