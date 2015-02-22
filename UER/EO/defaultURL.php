@@ -24,9 +24,7 @@ class defaultURL extends aEntityClass implements iEntityClass {
         'website'=>'unknown'
     );
     
-    public static function get_processors(){
-        return array('HTTP','URN','SRN');
-    }
+
     
     /**
      *  Uniform Resorce Locator
@@ -68,6 +66,10 @@ class defaultURL extends aEntityClass implements iEntityClass {
         // you can do better I have no doubt
         $link = "<span class='link UEntity'><a href='{$this->URI}' class='UEntity'>{$this->RI}</a></span>";
         return $link;
+    }
+
+    public static function get_handlers() {
+        return false;
     }
 
 
