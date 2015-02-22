@@ -8,6 +8,37 @@ abstract class aEntityClass extends aLogger{
     protected $URI = null; // The RI being managed
     protected $parsed_RI = null; // the parsed version
     protected $subUER = array(); // further RI objects
+    
+    protected $object_data = array(
+        'name'=>'unknown',
+        'description'=>'unknown',
+        'version'=>'unknown',
+        'API'=>'uknown',
+        'support'=>'unknown',        
+        'updates'=>'unknown',
+        'author'=>'unknown',
+        'website'=>'unknown'
+    );
+    public function inspect_object($detail=false){
+        if($detail === false){
+            return $this->object_data;
+        }
+        if(isset($this->object_data[$detail])){
+            return $this->object_data[$detail];
+        }
+        return false;
+    }
+
+    /*
+     *  HELPER METHODS
+     */
+    protected function render_as_link($class=''){
+        if(trim($class)!=''){
+            $class .= ' ';
+        }
+        $link = "<span class='{$class}link UEntity'><a href='{$this->URI}' class='UEntity'>{$this->RI}</a></span>";
+        return $link;
+    }
 
     protected function failure_to_parse_URI(){
         echo "Provide a replacement function in your sub class that is more usefull";
@@ -23,5 +54,6 @@ abstract class aEntityClass extends aLogger{
         $this->URI = $RI;
         $this->parsed_RI = $parsed_ri;
     }
+    
     
 }
