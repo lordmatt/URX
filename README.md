@@ -4,9 +4,9 @@ An extensible library for handling Resource Identifiers in a web-generation cont
 Handles URLs and URNs like a pro. It does not however really do anything with them as that is your job.
 
 # Overview
-Development Status: Mid Alpha
+Development Status: Late Alpha
 
-Functionality: Minimal
+Functionality: All base features, +Basic Demo +Youtube Module
 
 # Details
 Specially engineered from the ground up to convert all forms of Resource Identifier into an object that can be made used of and optionally rendered in a uniform way. This is not designed to be especially useful outside of other projects which might make use of this feature as a core module.
